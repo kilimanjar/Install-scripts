@@ -1,8 +1,10 @@
 #!/bin/bash
 
 IP4ADDR="my static ip"
-DNS1="1st DNS IP"
-DNS2="2nd DNS IP"
+DNS1="217.31.204.130"
+DNS2="193.29.206.206"
+SSH_PORT="sshd port number"    # server sshd will be listening on this port number
+
 
 cat > iptables <<EOF
 *filter
@@ -36,7 +38,6 @@ cat > iptables <<EOF
 
 # Log & Drop chain definition
 :LnD - [0:0]
--A LnD -j DROP
 -A LnD -p tcp  -j LOG --log-prefix "[TCP drop] "  --log-level 6
 -A LnD -p udp  -j LOG --log-prefix "[UDP drop] "  --log-level 6
 -A LnD -p icmp -j LOG --log-prefix "[ICMP drop] " --log-level 6
@@ -128,3 +129,74 @@ cat > iptables <<EOF
 
 -A INPUT  -i eth0 -p icmp -j ICMP_input
 -A OUTPUT -o eth0 -p icmp -j ICMP_output
+
+# DNS 1
+-A INPUT  -s ${DNS1} -d ${IP4ADDR} -i eth0 -p udp -m udp --sport 53 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+-A OUTPUT -s ${IP4ADDR} -d ${DNS1} -o eth0 -p udp -m udp --sport 1024:65535 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+-A INPUT  -s ${DNS1} -d ${IP4ADDR} -i eth0 -p tcp -m tcp --sport 53 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+-A OUTPUT -s ${IP4ADDR} -d ${DNS1} -o eth0 -p tcp -m tcp --sport 1024:65535 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# DNS 2
+-A INPUT  -s ${DNS2} -d ${IP4ADDR} -i eth0 -p udp -m udp --sport 53 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+-A OUTPUT -s ${IP4ADDR} -d ${DNS2} -o eth0 -p udp -m udp --sport 1024:65535 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+-A INPUT  -s ${DNS2} -d ${IP4ADDR} -i eth0 -p tcp -m tcp --sport 53 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+-A OUTPUT -s ${IP4ADDR} -d ${DNS2} -o eth0 -p tcp -m tcp --sport 1024:65535 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# HTTP server
+#-A INPUT  -d ${IP4ADDR} -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 80 -j ACCEPT
+#-A OUTPUT -s ${IP4ADDR} -o eth0 -p tcp -m tcp --sport 80 --dport 1024:65535 -j ACCEPT
+# HTTPS server
+#-A INPUT  -d ${IP4ADDR} -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 443 -j ACCEPT
+#-A OUTPUT -s ${IP4ADDR} -o eth0 -p tcp -m tcp --sport 443 --dport 1024:65535 -j ACCEPT
+
+# HTTP client
+-A INPUT  -d ${IP4ADDR} -i eth0 -p tcp -m tcp --sport 80 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+-A OUTPUT -s ${IP4ADDR} -o eth0 -p tcp -m tcp --sport 1024:65535 --dport 80 -m state --state NEW,ESTABLISHED -j ACCEPT
+# HTTPS client
+-A INPUT  -d ${IP4ADDR} -i eth0 -p tcp -m tcp --sport 443 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+-A OUTPUT -s ${IP4ADDR} -o eth0 -p tcp -m tcp --sport 1024:65535 --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# ssh
+-A INPUT  -d ${IP4ADDR} -i eth0 -p tcp -m tcp --sport 1024:65535 --dport ${SSH_PORT} -m state --state NEW,ESTABLISHED -j ACCEPT
+-A OUTPUT -s ${IP4ADDR} -o eth0 -p tcp -m tcp --sport ${SSH_PORT} --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+
+# ssh client
+#-A INPUT  -i eth0 -p tcp --sport 22 -d ${IP4ADDR} --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+#-A OUTPUT -o eth0 -p tcp -s ${IP4ADDR} --sport 1024:65535 --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# SMTP
+#-A INPUT  -d ${IP4ADDR} -i eth0 -p tcp -m tcp --sport 25 --dport 1024:65535 -j ACCEPT
+#-A INPUT  -d ${IP4ADDR} -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 25 -j ACCEPT
+#-A OUTPUT -s ${IP4ADDR} -o eth0 -p tcp -m tcp --sport 1024:65535 --dport 25 -j ACCEPT
+#-A OUTPUT -s ${IP4ADDR} -o eth0 -p tcp -m tcp --sport 25 --dport 1024:65535 -j ACCEPT
+
+# MSA
+#-A INPUT  -d ${IP4ADDR} -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 587 -j ACCEPT
+#-A OUTPUT -s ${IP4ADDR} -o eth0 -p tcp -m tcp --sport 587 --dport 1024:65535 -j ACCEPT
+
+# IMAP
+#-A INPUT  -d ${IP4ADDR} -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 143 -m state --state NEW,ESTABLISHED -j ACCEPT
+#-A OUTPUT -s ${IP4ADDR} -o eth0 -p tcp -m tcp --sport 143 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+
+# NTP client
+#-A INPUT  -d ${IP4ADDR} -i eth0 -p udp -m udp --sport 123 --dport 123 -m state --state ESTABLISHED -j ACCEPT
+#-A OUTPUT -s ${IP4ADDR} -o eth0 -p udp -m udp --sport 123 --dport 123 -m state --state NEW,ESTABLISHED -j ACCEPT
+
+# OpenVPN client
+#-A INPUT  -d ${IP4ADDR} -i eth0 -p udp --sport 1194 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+#-A OUTPUT -s ${IP4ADDR} -o eth0 -p udp --sport 1054:65534 --dport 1194 -m state --state NEW,ESTABLISHED -j ACCEPT
+#-A INPUT  -i tun+ -j ACCEPT
+#-A OUTPUT -o tun+ -j ACCEPT
+#-A FORWARD -i tun+ -j ACCEPT
+
+# POP3
+#-A INPUT  -d ${IP4ADDR} -i eth0 -p tcp -m tcp --sport 1024:65535 --dport 110 -m state --state NEW,ESTABLISHED -j ACCEPT
+#-A OUTPUT -s ${IP4ADDR} -o eth0 -p tcp -m tcp --sport 110 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+
+-A INPUT  -i eth0 -p tcp -j LnD
+-A INPUT  -i eth0 -p udp -j LnD
+-A OUTPUT -o eth0 -p tcp -j LnR
+-A OUTPUT -o eth0 -p udp -j LnR
+
+COMMIT
+EOF
