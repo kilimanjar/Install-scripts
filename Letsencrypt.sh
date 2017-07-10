@@ -4,6 +4,7 @@ MYDOMAIN=my.domain.tld
 ANOTHERDOMAIN=my.anotherdomain.tld
 
 useradd -m -s /bin/false letsencrypt
+passwd -l letsencrypt
 
 mkdir /etc/letsencrypt
 
