@@ -1,7 +1,8 @@
 #!/bin/bash
 
 IP4ADDR="my static ip"
-
+DNS1="1st DNS IP"
+DNS2="2nd DNS IP"
 
 cat > iptables <<EOF
 *filter
@@ -122,3 +123,8 @@ cat > iptables <<EOF
 -A OUTPUT -d 203.0.113.0/24  -o eth0 -j LIANA_Reserved
 -A INPUT  -s 240.0.0.0/4     -i eth0 -j LIANA_Reserved
 -A OUTPUT -d 240.0.0.0/4     -o eth0 -j LIANA_Reserved
+
+-A INPUT -p tcp -j Portscan
+
+-A INPUT  -i eth0 -p icmp -j ICMP_input
+-A OUTPUT -o eth0 -p icmp -j ICMP_output
