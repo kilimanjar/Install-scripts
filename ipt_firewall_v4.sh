@@ -93,3 +93,32 @@ cat > iptables <<EOF
 # traffic on lo accept
 -A INPUT  -i lo -j ACCEPT
 -A OUTPUT -o lo -j ACCEPT
+
+# BANNED IPs should be here
+#-A INPUT  -s 23.23.221.92/32 -i eth0 -j LBanned
+# or
+#-A INPUT  -s 31.184.194.115/32  -i eth0 -j DROP
+
+# IANA Reserved
+-A INPUT  -s 10.0.0.0/8      -i eth0 -j LIANA_Reserved
+-A OUTPUT -d 10.0.0.0/8      -o eth0 -j LIANA_Reserved
+-A INPUT  -s 127.0.0.0/8     -i eth0 -j LIANA_Reserved
+-A OUTPUT -d 127.0.0.0/8     -o eth0 -j LIANA_Reserved
+-A INPUT  -s 169.254.0.0/16  -i eth0 -j LIANA_Reserved
+-A OUTPUT -d 169.254.0.0/16  -o eth0 -j LIANA_Reserved
+-A INPUT  -s 172.16.0.0/12   -i eth0 -j LIANA_Reserved
+-A OUTPUT -d 172.16.0.0/12   -o eth0 -j LIANA_Reserved
+-A INPUT  -s 192.0.2.0/24    -i eth0 -j LIANA_Reserved
+-A OUTPUT -d 192.0.2.0/24    -o eth0 -j LIANA_Reserved
+-A INPUT  -s 192.88.99.0/24  -i eth0 -j LIANA_Reserved
+-A OUTPUT -d 192.88.99.0/24  -o eth0 -j LIANA_Reserved
+-A INPUT  -s 192.168.0.0/16  -i eth0 -j LIANA_Reserved
+-A OUTPUT -d 192.168.0.0/16  -o eth0 -j LIANA_Reserved
+-A INPUT  -s 198.18.0.0/15   -i eth0 -j LIANA_Reserved
+-A OUTPUT -d 198.18.0.0/15   -o eth0 -j LIANA_Reserved
+-A INPUT  -s 198.51.100.0/24 -i eth0 -j LIANA_Reserved
+-A OUTPUT -d 198.51.100.0/24 -o eth0 -j LIANA_Reserved
+-A INPUT  -s 203.0.113.0/24  -i eth0 -j LIANA_Reserved
+-A OUTPUT -d 203.0.113.0/24  -o eth0 -j LIANA_Reserved
+-A INPUT  -s 240.0.0.0/4     -i eth0 -j LIANA_Reserved
+-A OUTPUT -d 240.0.0.0/4     -o eth0 -j LIANA_Reserved
