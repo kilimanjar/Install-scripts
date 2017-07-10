@@ -57,4 +57,6 @@ acme.sh --installcert -d ${MYDOMAIN} \
   --certpath /etc/letsencrypt/${MYDOMAIN}.cert.pem \
   --keypath /etc/letsencrypt/${MYDOMAIN}.key \
   --fullchainpath /etc/letsencrypt/${MYDOMAIN}.chain.pem \
-  --reloadcmd "sudo systemctl reload nginx; sudo systemctl reload postfix; sudo systemctl reload dovecot"
+  --reloadcmd "sudo systemctl reload nginx; cat /etc/letsencrypt/${MYDOMAIN}.cert.pem /etc/letsencrypt/${MYDOMAIN}.chain.pem > /etc/letsencrypt/${MYDOMAIN}.combined.pem; sudo systemctl reload postfix; sudo systemctl reload dovecot"
+
+exit 0
