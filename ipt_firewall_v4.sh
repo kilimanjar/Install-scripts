@@ -200,3 +200,5 @@ cat > iptables <<EOF
 
 COMMIT
 EOF
+
+exit 0
