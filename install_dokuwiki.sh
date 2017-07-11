@@ -8,7 +8,7 @@ WWW_USER="www-data"
 WWW_GROUP="www-data"
 
 
-curl -L ${DOKU_SRC} | tar --strip-components=1 xvf - -C ${WEBROOT}
+curl -L ${DOKU_SRC} | tar zxf - --strip-components=1 -C ${WEBROOT}
 touch ${WEBROOT}/conf/local.php.bak
 touch ${WEBROOT}/conf/plugins.local.php.bak
 chown -R ${WWW_USER}:${WWW_GROUP} ${WEBROOT}
@@ -59,9 +59,10 @@ cat > ${WEBROOT}/inc/preload.php <<EOF
  
 define('DOKU_CONF','${ABOVEWEBROOT}/dokuwiki.conf/');
 EOF
+
 chown ${WWW_USER}:${WWW_GROUP} ${WEBROOT}/inc/preload.php
 
-echo "\$conf[\'savedir\'] = \'/home/yourname/data\';" >> ${ABOVEWEBROOT}/dokuwiki.conf/local.php
+echo "$conf['savedir'] = '/home/yourname/data';" >> ${ABOVEWEBROOT}/dokuwiki.conf/local.php
 
 
 #rm -r ${TEMP}
