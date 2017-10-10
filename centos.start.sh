@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo "alias ls='ls -la --color=auto --group-directories-first'" >> ~/.bashrc
 
 yum remove -y dhclient
 yum update
