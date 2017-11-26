@@ -3,7 +3,7 @@ DEST_FILE="/etc/rsyslog.conf"
 
 yum -y install rsyslog
 
-f [ -f ${DEST_FILE} ]; then
+if [ -f ${DEST_FILE} ]; then
     cp -a ${DEST_FILE} ${DEST_FILE}.backup-$(date +%F)
 fi
 
