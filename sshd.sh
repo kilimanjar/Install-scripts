@@ -1,13 +1,32 @@
+#!/bin/bash
+SSH_PORT_NUMBER=30
+SFTP_SUBSYSTEM_DESTINATION=""
+DEST_FILE="/etc/ssh/sshd_config"
+ALLOW_USERS=""
 
+semanage port -a -t ssh_port -p tcp ${SSH_PORT_NUMBER}
 
-cat /etc/ssh/sshd_config << EOF
-Port {{ ssh_port_number }}
+if [ -f ${DEST_FILE} ]; then
+    cp -a ${DEST_FILE} ${DEST_FILE}.backup-$(date +%F)
+fi
+
+# in Debian
+if [ -f /usr/lib/openssh/sftp-server ]; then
+   SFTP_SUBSYSTEM_DESTINATIN="/usr/lib/openssh/sftp-server"
+fi
+# in CentOS
+if [ -f /usr/libexec/openssh/sftp-server ]; then
+   SFTP_SUBSYSTEM_DESTINATIN="/usr/libexec/openssh/sftp-server"
+fi
+
+cat > /etc/ssh/sshd_config <<EOF
+Port ${SSH_PORT_NUMBER}
 AddressFamily inet
-ListenAddress {{ ansible_host }}
+ListenAddress ${IP4ADDR}
 Protocol 2
 HostKey /etc/ssh/ssh_host_rsa_key
 HostKey /etc/ssh/ssh_host_ecdsa_key
-AllowUsers tonda
+AllowUsers ${ALLOW_USERS}
 AllowTcpForwarding yes
 Banner none
 ChallengeResponseAuthentication no
@@ -36,12 +55,7 @@ RhostsRSAAuthentication no
 RSAAuthentication no
 ServerKeyBits 1024
 StrictModes yes
-{% if ansible_distribution == 'CentOS' %}
-Subsystem sftp /usr/libexec/openssh/sftp-server
-{% endif %}
-{% if ansible_distribution == 'Debian' %}
-Subsystem sftp /usr/lib/openssh/sftp-server
-{% endif %}
+Subsystem sftp ${SFTP_SUBSYSTEM_DESTINATION}
 SyslogFacility AUTH
 TCPKeepAlive no
 UseDNS no
@@ -51,3 +65,7 @@ UsePrivilegeSeparation yes
 X11Forwarding no
 X11DisplayOffset 10
 EOF
+
+systemctl restart sshd
+
+exit 0
