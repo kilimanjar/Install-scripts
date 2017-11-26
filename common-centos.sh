@@ -1,10 +1,12 @@
 #!/bin/bash
 
+echo "alias ls='ls -la --color=auto --group-directories-first'" >> /etc/skel/.bashrc
 echo "alias ls='ls -la --color=auto --group-directories-first'" >> ~/.bashrc
 
 yum remove -y dhclient
 yum update
 yum install nano curl wget bash-completion setools-console policycoreutils-python iptables-services epel-release
+yum autoremove
 
 systemctl disable firewalld
 systemctl enable iptables
