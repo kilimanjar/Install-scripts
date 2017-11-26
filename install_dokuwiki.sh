@@ -2,16 +2,13 @@
 
 #TEMP='mktemp -d'
 DOKU_SRC="https://download.dokuwiki.org/out/dokuwiki-c5525093cf2c4f47e2e5d2439fe13964.tgz"
-ABOVEWEBROOT="/var/www/${MYWEBDOMAIN}"
-WEBROOT="${ABOVEWEBROOT}/www"
-WWW_USER="www-data"
-WWW_GROUP="www-data"
 
+. _variables
 
 curl -L ${DOKU_SRC} | tar zxf - --strip-components=1 -C ${WEBROOT}
 touch ${WEBROOT}/conf/local.php.bak
 touch ${WEBROOT}/conf/plugins.local.php.bak
-chown -R ${WWW_USER}:${WWW_GROUP} ${WEBROOT}
+chown -R ${WWW_DATA_USER_NAME}:${WWW_DATA_GROUP_NAME} ${WEBROOT}
 semanage fcontext -a -t httpd_sys_rw_content_t "${WEBROOT}/data(/.*)?"
 restorecon -R -v ${WEBROOT}/data
 semanage fcontext -a -t httpd_sys_rw_content_t "${WEBROOT}/lib/plugins(/.*)?"
@@ -60,7 +57,7 @@ cat > ${WEBROOT}/inc/preload.php <<EOF
 define('DOKU_CONF','${ABOVEWEBROOT}/dokuwiki.conf/');
 EOF
 
-chown ${WWW_USER}:${WWW_GROUP} ${WEBROOT}/inc/preload.php
+chown ${WWW_DATA_USER_NAME}:${WWW_DATA_GROUP_NAME} ${WEBROOT}/inc/preload.php
 
 echo "$conf['savedir'] = '/home/yourname/data';" >> ${ABOVEWEBROOT}/dokuwiki.conf/local.php
 
