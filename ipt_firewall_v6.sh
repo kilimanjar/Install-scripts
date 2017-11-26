@@ -1,10 +1,5 @@
 #!/bin/bash
-
-IP6ADDR="my static ip"
-DNS1="2001:1488:0800:0400:0000:0000:0000:0130"
-DNS2="2001:0678:0001:0000:0000:0000:0000:0206"
-SSH_PORT="sshd port number" # server sshd will be listening on this port number
-IP6IFACE="net interface"
+. _variables
 
 cat > /etc/sysconfig/ip6tables <<EOF
 *filter
@@ -47,16 +42,16 @@ cat > /etc/sysconfig/ip6tables <<EOF
 -A OUTPUT -p icmpv6 -j ACCEPT
 
 # DNS 1
--A INPUT  -s ${DNS1} -d ${IP6ADDR} -i ${IP6IFACE} -p udp -m udp --sport 53 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
--A OUTPUT -s ${IP6ADDR} -d ${DNS1} -o ${IP6IFACE} -p udp -m udp --sport 1024:65535 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
--A INPUT  -s ${DNS1} -d ${IP6ADDR} -i ${IP6IFACE} -p tcp -m tcp --sport 53 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
--A OUTPUT -s ${IP6ADDR} -d ${DNS1} -o ${IP6IFACE} -p tcp -m tcp --sport 1024:65535 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+-A INPUT  -s ${DNS6_1} -d ${IP6ADDR} -i ${IP6IFACE} -p udp -m udp --sport 53 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+-A OUTPUT -s ${IP6ADDR} -d ${DNS6_1} -o ${IP6IFACE} -p udp -m udp --sport 1024:65535 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+-A INPUT  -s ${DNS6_1} -d ${IP6ADDR} -i ${IP6IFACE} -p tcp -m tcp --sport 53 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+-A OUTPUT -s ${IP6ADDR} -d ${DNS6_1} -o ${IP6IFACE} -p tcp -m tcp --sport 1024:65535 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
 
 # DNS 2
--A INPUT  -s ${DNS2} -d ${IP6ADDR} -i ${IP6IFACE} -p udp -m udp --sport 53 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
--A OUTPUT -s ${IP6ADDR} -d ${DNS2} -o ${IP6IFACE} -p udp -m udp --sport 1024:65535 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
--A INPUT  -s ${DNS2} -d ${IP6ADDR} -i ${IP6IFACE} -p tcp -m tcp --sport 53 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
--A OUTPUT -s ${IP6ADDR} -d ${DNS2} -o ${IP6IFACE} -p tcp -m tcp --sport 1024:65535 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+-A INPUT  -s ${DNS6_2} -d ${IP6ADDR} -i ${IP6IFACE} -p udp -m udp --sport 53 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+-A OUTPUT -s ${IP6ADDR} -d ${DNS6_2} -o ${IP6IFACE} -p udp -m udp --sport 1024:65535 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
+-A INPUT  -s ${DNS6_2} -d ${IP6ADDR} -i ${IP6IFACE} -p tcp -m tcp --sport 53 --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+-A OUTPUT -s ${IP6ADDR} -d ${DNS6_2} -o ${IP6IFACE} -p tcp -m tcp --sport 1024:65535 --dport 53 -m state --state NEW,ESTABLISHED -j ACCEPT
 
 # HTTP server
 #-A INPUT  -d ${IP6ADDR} -i ${IP6IFACE} -p tcp -m tcp --sport 1024:65535 --dport 80 -j ACCEPT
