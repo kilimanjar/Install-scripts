@@ -1,10 +1,6 @@
 #!/bin/bash
 
-IP4ADDR="my static ip"
-DNS1="217.31.204.130"
-DNS2="193.29.206.206"
-SSH_PORT="sshd port number"    # server sshd will be listening on this port number
-IP4IFACE="net interface"
+. _variables
 
 cat > /etc/sysconfig/iptables <<EOF
 *filter
@@ -157,8 +153,8 @@ cat > /etc/sysconfig/iptables <<EOF
 -A OUTPUT -s ${IP4ADDR} -o ${IP4IFACE} -p tcp -m tcp --sport 1024:65535 --dport 443 -m state --state NEW,ESTABLISHED -j ACCEPT
 
 # ssh
--A INPUT  -d ${IP4ADDR} -i ${IP4IFACE} -p tcp -m tcp --sport 1024:65535 --dport ${SSH_PORT} -m state --state NEW,ESTABLISHED -j ACCEPT
--A OUTPUT -s ${IP4ADDR} -o ${IP4IFACE} -p tcp -m tcp --sport ${SSH_PORT} --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
+-A INPUT  -d ${IP4ADDR} -i ${IP4IFACE} -p tcp -m tcp --sport 1024:65535 --dport ${SSH_PORT_NUMBER} -m state --state NEW,ESTABLISHED -j ACCEPT
+-A OUTPUT -s ${IP4ADDR} -o ${IP4IFACE} -p tcp -m tcp --sport ${SSH_PORT_NUMBER} --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
 
 # ssh client
 #-A INPUT  -i ${IP4IFACE} -p tcp --sport 22 -d ${IP4ADDR} --dport 1024:65535 -m state --state ESTABLISHED -j ACCEPT
