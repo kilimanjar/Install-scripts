@@ -1,8 +1,9 @@
 #!/bin/bash
-SSH_PORT_NUMBER=30
+
+. _variables
 SFTP_SUBSYSTEM_DESTINATION=""
 DEST_FILE="/etc/ssh/sshd_config"
-ALLOW_USERS=""
+
 
 semanage port -a -t ssh_port -p tcp ${SSH_PORT_NUMBER}
 
@@ -26,7 +27,7 @@ ListenAddress ${IP4ADDR}
 Protocol 2
 HostKey /etc/ssh/ssh_host_rsa_key
 HostKey /etc/ssh/ssh_host_ecdsa_key
-AllowUsers ${ALLOW_USERS}
+AllowUsers ${SSH_ALLOW_USERS}
 AllowTcpForwarding yes
 Banner none
 ChallengeResponseAuthentication no
