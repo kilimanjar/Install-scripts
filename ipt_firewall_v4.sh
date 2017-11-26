@@ -6,7 +6,7 @@ DNS2="193.29.206.206"
 SSH_PORT="sshd port number"    # server sshd will be listening on this port number
 IP4IFACE="net interface"
 
-cat > iptables <<EOF
+cat > /etc/sysconfig/iptables <<EOF
 *filter
 :INPUT DROP [0:0]
 :FORWARD DROP [0:0]
@@ -201,5 +201,7 @@ cat > iptables <<EOF
 COMMIT
 
 EOF
+
+systemctl reload iptables
 
 exit 0
