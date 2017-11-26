@@ -3,6 +3,16 @@
 
 yum -y install nginx php-fpm
 
+mkdir /etc/nginx/sites-available
+mkdir /etc/nginx/sites-enabled
+
+userdel -Z -r -f httpd
+userdel -Z -r -f www-data
+groupadd -g ${WWW_DATA_GID} ${WWW_DATA_GROUP_NAME}
+useradd -d ${WWW_DATA_HOMEDIR} -m -u ${WWW_DATA_UID} -s /bin/false ${WWW_DATA_USER_NAME}
+semanage fcontext -a -t https_sys_content ${WWW_DATA_HOMEDIR}
+restorecon -v ${WWW_DATA_HOMEDIR}
+
 if [ -f ${DEST_FILE} ]; then
     cp -a ${DEST_FILE} ${DEST_FILE}.backup-$(date +%F)
 fi
@@ -11,7 +21,7 @@ cat > /etc/nginx/nginx.conf <<EOF
 worker_processes      2;
 worker_priority      15;
 
-user www-data;
+user ${WWW_DATA_USER_NAME};
 pid /var/run/nginx.pid;
 
 events {
@@ -66,7 +76,6 @@ http {
   #passenger_ruby         /usr/bin/ruby;
   include                 /etc/nginx/ssl.conf
   include                 /etc/nginx/mime.types;
-  include                 /etc/nginx/conf.d/*.conf;
   include                 /etc/nginx/sites-enabled/*;
 }
 EOF
