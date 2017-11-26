@@ -6,7 +6,7 @@ DNS2="2001:0678:0001:0000:0000:0000:0000:0206"
 SSH_PORT="sshd port number" # server sshd will be listening on this port number
 IP6IFACE="net interface"
 
-cat > ip6tables <<EOF
+cat > /etc/sysconfig/ip6tables <<EOF
 *filter
 :INPUT DROP [0:0]
 :FORWARD DROP [0:0]
@@ -110,5 +110,6 @@ cat > ip6tables <<EOF
 COMMIT
 
 EOF
+systemctl restart ip6tables
 
 exit 0
