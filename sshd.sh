@@ -14,11 +14,11 @@ fi
 
 # in Debian
 if [ -f /usr/lib/openssh/sftp-server ]; then
-   SFTP_SUBSYSTEM_DESTINATIN="/usr/lib/openssh/sftp-server"
+   SFTP_SUBSYSTEM_DESTINATION="/usr/lib/openssh/sftp-server"
 fi
 # in CentOS
 if [ -f /usr/libexec/openssh/sftp-server ]; then
-   SFTP_SUBSYSTEM_DESTINATIN="/usr/libexec/openssh/sftp-server"
+   SFTP_SUBSYSTEM_DESTINATION="/usr/libexec/openssh/sftp-server"
 fi
 
 cat > /etc/ssh/sshd_config <<EOF
