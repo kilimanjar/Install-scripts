@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 . _variables
 SFTP_SUBSYSTEM_DESTINATION=""
