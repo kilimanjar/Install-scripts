@@ -5,7 +5,7 @@ SFTP_SUBSYSTEM_DESTINATION=""
 DEST_FILE="/etc/ssh/sshd_config"
 
 
-semanage port -a -t ssh_port -p tcp ${SSH_PORT_NUMBER}
+semanage port -a -t ssh_port_t -p tcp ${SSH_PORT_NUMBER}
 
 if [ -f ${DEST_FILE} ]; then
     cp -a ${DEST_FILE} ${DEST_FILE}.backup-$(date +%F)
