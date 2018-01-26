@@ -10,7 +10,7 @@ userdel -Z -r -f httpd
 userdel -Z -r -f www-data
 groupadd -g ${WWW_DATA_GID} ${WWW_DATA_GROUP_NAME}
 useradd -d ${WWW_DATA_HOMEDIR} -m -u ${WWW_DATA_UID} -s /bin/false ${WWW_DATA_USER_NAME}
-semanage fcontext -a -t https_sys_content ${WWW_DATA_HOMEDIR}
+semanage fcontext -a -t httpd_sys_content_t ${WWW_DATA_HOMEDIR}
 restorecon -v ${WWW_DATA_HOMEDIR}
 
 if [ -f ${DEST_FILE} ]; then
