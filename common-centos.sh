@@ -14,4 +14,7 @@ systemctl start iptables
 systemctl enable ip6tables
 systemctl start ip6tables
 
+systemctl disable systemd-readahead-collect.service
+systemctl disable systemd-readahead-replay.service
+
 exit 0
