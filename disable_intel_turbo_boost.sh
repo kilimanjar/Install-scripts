@@ -1,4 +1,5 @@
 #!/bin/bash
+# from: https://blog.christophersmart.com/2017/02/08/manage-intel-turbo-boost-with-systemd/
 
 cat > /etc/systemd/system/disable-turbo-boost.service <<EOF
 [Unit]
